@@ -1,0 +1,5 @@
+{
+	"iot_kit_key" : "Delhi|123",
+	"device_key" : 1,
+	"run_time_mins" : 60
+}
