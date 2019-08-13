@@ -7,7 +7,7 @@
 const char* ssid = "ArGee";
 const char* password =  "i6et72qnt6";
 
-char* iot_kit_key=" ";
+char* iot_kit_key;
 int device_key;
 int run_time_mins;
  
@@ -24,28 +24,39 @@ void setup(){
   }
  
   Serial.println(WiFi.localIP());
- 
+
   server.on("/trigger_command", HTTP_PUT, [](AsyncWebServerRequest *request){
-    Serial.println("Request received!");
-
-    /*JSON body handling as a request*/
-    AsyncCallbackJsonWebHandler* handler = 
-        new AsyncCallbackJsonWebHandler("/trigger_command", [](AsyncWebServerRequest *request, JsonVariant &json) {
-      JsonObject& jsonObj = json.as<JsonObject>();
-      // ...
-    });
-    server.addHandler(handler);
-
-    /*JSON Response Stream*/
-    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    //nothing and dont remove it
+  }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)  {
     DynamicJsonBuffer jsonBuffer;
-    JsonObject &root = jsonBuffer.createObject();
-    root["command_executed"] = true;
-    root["message"] = "Command executed successfully";
-    root.printTo(*response);
-    request->send(response);
+    JsonObject& root = jsonBuffer.parseObject((const char*)data);
+    if (root.success()) {
+      if (root.containsKey("iot_kit_key")) {
+        Serial.print("iot_kit_key: ");
+        Serial.println(root["iot_kit_key"].asString());
+      }
+      if (root.containsKey("device_key")) {
+        Serial.print("device_key: ");
+        Serial.println(root["device_key"].asString());
+      }
+      if (root.containsKey("run_time_mins")) {
+        Serial.print("run_time_mins: ");
+        Serial.println(root["run_time_mins"].asString());
+      }
+      
+      /*JSON Response Stream*/
+      AsyncResponseStream *response = request->beginResponseStream("application/json");
+      DynamicJsonBuffer jsonBuffer;
+      JsonObject &root = jsonBuffer.createObject();
+      root["command_executed"] = true;
+      root["message"] = "Command executed successfully";
+      root.printTo(*response);
+      request->send(response);
+    } else {
+      request->send(404, "text/plain", "");
+    }
   });
- 
+
   server.begin();
 }
  
