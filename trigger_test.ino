@@ -7,7 +7,7 @@
 const char* ssid = "ArGee";
 const char* password =  "i6et72qnt6";
 
-char* iot_kit_key;
+char* iot_kit_key=" ";
 int device_key;
 int run_time_mins;
  
@@ -30,22 +30,9 @@ void setup(){
 
     /*JSON body handling as a request*/
     AsyncCallbackJsonWebHandler* handler = 
-      new AsyncCallbackJsonWebHandler("/rest/endpoint",
-            [](AsyncWebServerRequest *request, JsonVariant &json) {
-         JsonObject& jsonObj = jsonBuffer.as<JsonObject>();
-         const size_t capacity = JSON_OBJECT_SIZE(3) +  53;
-              DynamicJsonBuffer jsonBuffer(capacity);
-            
-             // Parse JSON object
-              if (!root.success()) {
-                    Serial.println(F("Parsing failed!"));
-                    return;
-              }
-
-              // Decode JSON/Extract values
-              iot_device_key = jsonObj["iot_device_key"];
-              device_key = jsonObj["device_key"];
-              run_time_mins = jsonObj["run_time_mins"];
+        new AsyncCallbackJsonWebHandler("/trigger_command", [](AsyncWebServerRequest *request, JsonVariant &json) {
+      JsonObject& jsonObj = json.as<JsonObject>();
+      // ...
     });
     server.addHandler(handler);
 
