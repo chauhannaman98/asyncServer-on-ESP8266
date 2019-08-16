@@ -4,8 +4,8 @@
 #include "ArduinoJson.h"
 #include "AsyncJson.h"
  
-const char* ssid = "SSID";
-const char* password =  "PASSWORD";
+const char* ssid = "ssid";
+const char* password =  "pass";
 
 char* iot_kit_key;
 int device_key;
@@ -31,6 +31,7 @@ void setup(){
     DynamicJsonBuffer jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject((const char*)data);
     if (root.success()) {
+      Serial.println("");
       if (root.containsKey("iot_kit_key")) {
         Serial.print("iot_kit_key: ");
         Serial.println(root["iot_kit_key"].asString());
@@ -53,7 +54,7 @@ void setup(){
       root.printTo(*response);
       request->send(response);
     } else {
-      request->send(404, "text/plain", "");
+      request->send(404, "text/plain", "Error!!");
     }
   });
 
