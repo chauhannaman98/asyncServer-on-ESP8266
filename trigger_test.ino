@@ -4,8 +4,8 @@
 #include "ArduinoJson.h"
 #include "AsyncJson.h"
  
-const char* ssid = "ArGee";
-const char* password =  "i6et72qnt6";
+const char* ssid = "SSID";
+const char* password =  "PASSWORD";
 
 char* iot_kit_key;
 int device_key;
